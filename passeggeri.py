@@ -5,5 +5,7 @@ class Passeggeri:
         self.cognomeP = cognome
 
     def __str__(self):
-        return (f"Passeggero: {self.codicaPass}"
-                f"Nome: {self.nomeP} e Cognome: {self.cognomeP}")
+        return f"Passeggero: {self.codicaPass} | Nome: {self.nomeP} | Cognome: {self.cognomeP}"
+
+    def __repr__(self):
+        return f"Passeggero: {self.codicaPass} | Nome: {self.nomeP} | Cognome: {self.cognomeP}"

@@ -6,5 +6,7 @@ class Cabina:
         self.prezzo = int(prezzo)
 
     def __str__(self):
-        return (f"Cabina: {self.codiceCab}, numero di letti: {self.numLetti}, numero ponte: {self.numPonte}"
-                f"prezzo: {self.prezzo}")
+        return f"Cabina: {self.codiceCab}| letti: {self.numLetti} | ponte: {self.numPonte} | prezzo: {self.prezzo}"
+
+    def __repr__(self):
+        return f"Cabina: {self.codiceCab}| letti: {self.numLetti} | ponte: {self.numPonte} | prezzo: {self.prezzo}"

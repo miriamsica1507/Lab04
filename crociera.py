@@ -34,24 +34,24 @@ class Crociera:
             filein = open(file_path, newline='', encoding='utf-8')
             reader = csv.reader(filein)
             for line in reader:
-                if "CAB" in line[0]:
-                    if line[4] == "Lussuosa":
-                        prezzof = int(line[3])*1.20
-                    elif line[4].strip().isdigit():
-                        num_animali = int(line[4])
-                        prezzof = int(line[3])*(1 + 0.10*num_animali)
-                    else:
-                        prezzof = int(line[3])
-                    cabina = Cabina(
-                        codice_cab=line[0],
-                        num_letti=line[1],
-                        num_ponte=line[2],
-                        prezzo=prezzof
-                        )
+                if line[0].startswith("CAB"):
+                    codice_cab=line[0].strip()
+                    num_letti=int(line[1])
+                    num_ponte=int(line[2])
+                    prezzo = int(line[3])
+                    if len(line) > 4:
+                        tipo = line[4].strip()
+                        if tipo == "Lussuosa":
+                            prezzo = prezzo*1.20
+                        elif tipo.isdigit():
+                            num_animali = int(tipo)
+                            prezzo = prezzo*(1+0.10*num_animali)
+
+                    cabina = Cabina(codice_cab, num_letti, num_ponte, prezzo)
                     self.cabineDisponibiliL.append(cabina)
                 else:
                     passeggero = Passeggeri(
-                        codice_pass=line[0],
+                        codice_pass=line[0].strip(),
                         nome=line[1],
                         cognome=line[2]
                         )
@@ -63,28 +63,30 @@ class Crociera:
 
     def assegna_passeggero_a_cabina(self, codice_cabina, codice_passeggero):
         """Associa una cabina a un passeggero"""
-        if codice_cabina in self.cabineDisponibiliL:
-            if codice_passeggero in self.passeggeriTotali:
-                self.cabineOccupate.append(codice_cabina)
-                self.passeggeriTotali.remove(codice_passeggero)
-                self.passeggeriCabine.append([codice_cabina,codice_passeggero])
+        for cab in self.cabineDisponibiliL:
+            if cab.codice_cab.strip() == codice_cabina.strip():
+                self.cabineOccupate.append(cab)
+                break
             else:
-                print("Passegero non trovato")
-        else:
-            print("Cabina non disponibile")
+                print("Cabina non disponibile")
+        for passeg in self.passeggeriTotali:
+            if passeg.codice_pass.strip() == codice_passeggero.strip():
+                self.passeggeriTotali.remove(passeg)
+                break
+            else:
+                print("Passeggero non trovato")
+
+        self.passeggeriCabine.append([codice_cabina, codice_passeggero])
 
     def cabine_ordinate_per_prezzo(self):
         """Restituisce la lista ordinata delle cabine in base al prezzo"""
-        return sorted(self.cabineOccupate, key=lambda cabina: cabina.prezzo)
+        return sorted(self.cabineDisponibiliL, key=lambda cabina: cabina.prezzo)
 
     def elenca_passeggeri(self):
         """Stampa l'elenco dei passeggeri mostrando, per ognuno, la cabina a cui è associato, quando applicabile """
         for pass_cab in self.passeggeriCabine:
-            if pass_cab[1] == self.passeggeriTotali[0]:
-                print(f"Passeggero: {pass_cab[1]}, Nome: {self.passeggeriTotali[1]}"
-                      f"Cognome: {self.passeggeriTotali[2]} ha la cabina {pass_cab[0]}")
-            else:
-                print("Qualcosa è andato storto!")
+            print (f"Passeggero: {pass_cab[1]}, Codice cabina: {pass_cab[0]}")
+
 
 
 
